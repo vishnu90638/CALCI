@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .calculator {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            width: 300px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .screen {
+            grid-column: span 4;
+            background: #222;
+            color: #fff;
+            font-size: 2rem;
+            text-align: right;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .button {
+            background: #e0e0e0;
+            border: 1px solid #ccc;
+            font-size: 1.5rem;
+            padding: 20px;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .button:active {
+            background: #d0d0d0;
+        }
+        .button.operator {
+            background: #f9a825;
+            color: #fff;
+        }
+        .button.operator:active {
+            background: #e59400;
+        }
+        .button.equal {
+            background: #29b6f6;
+            color: #fff;
+            grid-column: span 2;
+        }
+        .button.equal:active {
+            background: #0288d1;
+        }
+        .button.zero {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="screen" id="screen"></div>
+        <div class="button" onclick="appendNumber('1')">1</div>
+        <div class="button" onclick="appendNumber('2')">2</div>
+        <div class="button" onclick="appendNumber('3')">3</div>
+        <div class="button operator" onclick="chooseOperation('+')">+</div>
+        <div class="button" onclick="appendNumber('4')">4</div>
+        <div class="button" onclick="appendNumber('5')">5</div>
+        <div class="button" onclick="appendNumber('6')">6</div>
+        <div class="button operator" onclick="chooseOperation('-')">-</div>
+        <div class="button" onclick="appendNumber('7')">7</div>
+        <div class="button" onclick="appendNumber('8')">8</div>
+        <div class="button" onclick="appendNumber('9')">9</div>
+        <div class="button operator" onclick="chooseOperation('*')">*</div>
+        <div class="button zero" onclick="appendNumber('0')">0</div>
+        <div class="button" onclick="clearScreen()">C</div>
+        <div class="button operator" onclick="chooseOperation('/')">/</div>
+        <div class="button equal" onclick="compute()">=</div>
+    </div>
+
+    <script>
+        let currentOperand = '';
+        let previousOperand = '';
+        let operation = undefined;
+
+        function clearScreen() {
+            currentOperand = '';
+            previousOperand = '';
+            operation = undefined;
+            updateScreen();
+        }
+
+        function appendNumber(number) {
+            if (number === '0' && currentOperand === '') return;
+            currentOperand = currentOperand.toString() + number.toString();
+            updateScreen();
+        }
+
+        function chooseOperation(op) {
+            if (currentOperand === '') return;
+            if (previousOperand !== '') {
+                compute();
+            }
+            operation = op;
+            previousOperand = currentOperand;
+            currentOperand = '';
+        }
+
+        function compute() {
+            let result;
+            const prev = parseFloat(previousOperand);
+            const current = parseFloat(currentOperand);
+            if (isNaN(prev) || isNaN(current)) return;
+            switch (operation) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    result = prev / current;
+                    break;
+                default:
+                    return;
+            }
+            currentOperand = result;
+            operation = undefined;
+            previousOperand = '';
+            updateScreen();
+        }
+
+        function updateScreen() {
+            const screen = document.getElementById('screen');
+            screen.innerText = currentOperand;
+        }
+
+        clearScreen();
+    </script>
+</body>
+</html>
